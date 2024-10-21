@@ -1,0 +1,51 @@
+version: '2'
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+    networks:
+      backend:
+        ipv4_address: 172.16.238.10
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.11
+  kafka:
+    image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.12
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    networks:
+      backend:
+         ipv4_address: 172.16.238.13
+    environment:
+         DYNAMIC_CONFIG_ENABLED: true
+    volumes:
+      - ~/kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+       - kafka
+networks:
+    backend:
+        driver: bridge
+        ipam:            
+            config:
+                - subnet: "172.16.238.0/24"

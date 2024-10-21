@@ -1,0 +1,42 @@
+spring:
+ datasource:
+    url: ${URI:jdbc:mysql://seudominio:porta}
+    username: ${USER:seuUsuario}
+    password: ${PASSWORD:SuaSenha}
+    driver-class-name: com.mysql.cj.jdbc.Driver 
+ jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+ main:
+   banner-mode: 'console'
+   
+ http:
+   encoding:
+     charset: "@project.build.souceEncoding@"
+ application:
+   name: "@projetc.name@"
+   version: "@project.version@"
+   description: "@project.description@"
+    
+#Dados exibidos no endpoint "info" do Actuator
+info:
+  app:
+    groupId: "@project.groupId@"
+    artifactId: "@project.artifactId@"
+    version: "@project.version@"
+    java.version: "@java.version@"
+    
+#Porta do servidor
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+    
+#Sobrescrevendo Grupos e níveis de Log
+logging:
+  group:
+    web: org.springframework.core.codec, org.springframework.http
+ 
